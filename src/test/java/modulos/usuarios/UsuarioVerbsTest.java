@@ -40,9 +40,27 @@ public class UsuarioVerbsTest {
         System.out.println("Cadastro novo usuario e id: " + id);
 
     }
-
     @Test
     @Order(2)
+    @DisplayName("Test: POST => Validar cadastrar usuario com EMAIL já cadastrado")
+    public void testCadastrarUsuarioComEmailCadastrado() {
+
+         given()
+                .contentType(ContentType.JSON)
+                .body(UsuarioDataFactory.registerUserEmailJaCadastrado())
+                .when()
+                .post("/usuarios")
+                .then()
+                .assertThat()
+                .statusCode(400)
+                .body("message", equalTo("Este email já está sendo usado"));
+
+        System.out.println("Cadastro novo usuario e id: " + id);
+
+    }
+
+    @Test
+    @Order(3)
     @DisplayName("Test: GET => Listar usuários cadastrados")
     public void testListarUsuariosCadastrados() {
 
@@ -56,7 +74,7 @@ public class UsuarioVerbsTest {
 
     }
     @Test
-    @Order(3)
+    @Order(4)
     @DisplayName("Test: GET => Buscar usuário por ID")
     public void testBuscarUsuarioPorId() {
 
@@ -72,7 +90,7 @@ public class UsuarioVerbsTest {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     @DisplayName("Test: PUT => Editar Usuário")
     public void testEditarUsuario() {
 
@@ -88,7 +106,7 @@ public class UsuarioVerbsTest {
 
     }
     @Test
-    @Order(5)
+    @Order(6)
     @DisplayName("Test: DELETE => Excluir Usuário")
     public void testExcluirUsuario() {
         System.out.println("Cadastro novo usuario e id: " + id);

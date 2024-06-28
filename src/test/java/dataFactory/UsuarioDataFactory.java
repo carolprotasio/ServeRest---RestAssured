@@ -7,12 +7,14 @@ public class UsuarioDataFactory {
 
     private static final Faker faker = new Faker();
 
-    public static UsuarioPojo loginAdm() {
-        UsuarioPojo loginAdmin = new UsuarioPojo();
-        loginAdmin.setEmail("carol@qa.com");
-        loginAdmin.setPassword("123456");
+    public static UsuarioPojo registerUserEmailJaCadastrado() {
+        UsuarioPojo loginEmailCadastrado = new UsuarioPojo();
+        loginEmailCadastrado.setNome(faker.name().firstName());
+        loginEmailCadastrado.setEmail("carol@qa.com");
+        loginEmailCadastrado.setPassword("123456");
+        loginEmailCadastrado.setAdministrador("false");
 
-        return  loginAdmin;
+        return  loginEmailCadastrado;
     }
     public static UsuarioPojo registerNoAdm() {
         UsuarioPojo newUser = new UsuarioPojo();
@@ -87,4 +89,5 @@ public class UsuarioDataFactory {
         newUser.setAdministrador("true");
         return newUser;
     }
+
 }
