@@ -16,6 +16,11 @@ public class ProdutoTest {
     private String tokenAdm;
     private String produtoId;
     private String tokenUsuario;
+    private String nome;
+    private int preco;
+    private String descricao;
+    private int quantidade;
+
 
     @BeforeEach
     public void beforeEach() {
@@ -115,4 +120,20 @@ public class ProdutoTest {
                 .statusCode(401)
                 .body("message", equalTo("Token de acesso ausente, inválido, expirado ou usuário do token não existe mais"));
     }
+    @Test
+    @Order(4)
+    @DisplayName("GET => Listar produtos cadastrados")
+    public void testListarProdutosCadastrados() {
+
+        given()
+                .contentType(ContentType.JSON)
+            .when()
+                .get("/produtos")
+            .then()
+                .assertThat()
+                .statusCode(200);
+    }
+
+
+
 }
