@@ -23,5 +23,14 @@ public class ProdutoDataFactory {
         return newProduct;
     }
 
+    public static ProdutoPojo registerProdutoMesmoNome() {
+        ProdutoPojo newProduct = new ProdutoPojo();
+        newProduct.setNome("Logitech MX Vertical");
+        newProduct.setPreco(faker.number().numberBetween(5, 5000));
+        newProduct.setDescricao(faker.commerce().material());
+        newProduct.setQuantidade(faker.number().numberBetween(1, 100));
+        return newProduct;
+    }
+
 
 }

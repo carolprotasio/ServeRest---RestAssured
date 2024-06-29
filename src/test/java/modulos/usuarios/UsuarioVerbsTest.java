@@ -18,7 +18,6 @@ public class UsuarioVerbsTest {
     public void beforeEach(){
         baseURI = "http://localhost";
         port = 3000;
-
     }
 
     @Test
@@ -37,7 +36,6 @@ public class UsuarioVerbsTest {
                 .body("message", equalTo("Cadastro realizado com sucesso"))
                 .extract()
                 .path("_id");
-        System.out.println("Cadastro novo usuario e id: " + id);
 
     }
     @Test
@@ -48,17 +46,14 @@ public class UsuarioVerbsTest {
          given()
                 .contentType(ContentType.JSON)
                 .body(UsuarioDataFactory.registerUserEmailJaCadastrado())
-                .when()
+            .when()
                 .post("/usuarios")
-                .then()
+            .then()
                 .assertThat()
                 .statusCode(400)
                 .body("message", equalTo("Este email já está sendo usado"));
 
-        System.out.println("Cadastro novo usuario e id: " + id);
-
     }
-
     @Test
     @Order(3)
     @DisplayName("Test: GET => Listar usuários cadastrados")
@@ -109,7 +104,6 @@ public class UsuarioVerbsTest {
     @Order(6)
     @DisplayName("Test: DELETE => Excluir Usuário")
     public void testExcluirUsuario() {
-        System.out.println("Cadastro novo usuario e id: " + id);
 
         given()
                 .contentType(ContentType.JSON)

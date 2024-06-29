@@ -12,6 +12,7 @@ import static org.hamcrest.Matchers.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UsuarioListarTest {
+
     private String admId;
     private String userId;
     private String nome;
@@ -92,20 +93,20 @@ public class UsuarioListarTest {
         administrador =  given()
                 .contentType(ContentType.JSON)
                 .param("email", email)
-                .when()
+            .when()
                 .get("/usuarios")
-                .then()
+            .then()
                 .assertThat()
                 .statusCode(200)
                 .extract()
                 .path("usuarios[0].administrador");
-        System.out.println(administrador);
 
     }
     @Test
     @Order(6)
     @DisplayName("GET - Listar usuários pelo NOME")
     public void testListarUsuariospeloNome(){
+
         password = given()
                 .contentType(ContentType.JSON)
                 .param("nome", nome)
@@ -157,7 +158,6 @@ public class UsuarioListarTest {
             .when()
                 .get("/usuarios/{_id}" )
             .then()
-                .log().all()
                 .assertThat()
                 .statusCode(400)
                 .body("message", equalTo("Usuário não encontrado"));

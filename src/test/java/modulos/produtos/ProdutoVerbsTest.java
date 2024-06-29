@@ -42,7 +42,7 @@ public class ProdutoVerbsTest {
     @Order(1)
     @DisplayName("Test: POST => Cadastrar novo produto")
     public void testCadastrarNovoProduto() {
-        System.out.println(token);
+
         produtoId = given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", token)
@@ -95,7 +95,6 @@ public class ProdutoVerbsTest {
             .when()
                 .get("/produtos/")
             .then()
-                .log().all()
                 .assertThat()
                 .statusCode(200);
 
@@ -134,6 +133,7 @@ public class ProdutoVerbsTest {
     @Order(7)
     @DisplayName("Test: GET => Listar produtos cadastrados por Quantidade")
     public void testListarProdutoporQuantidade() {
+
         given()
                 .contentType(ContentType.JSON)
                 .queryParam("quantidade", 53)
@@ -147,6 +147,7 @@ public class ProdutoVerbsTest {
     @Order(8)
     @DisplayName("Test: PUT => Editar produto")
     public void testEditarProduto() {
+
         given()
                 .contentType(ContentType.JSON)
                 .body(ProdutoDataFactory.productEdit())
@@ -160,7 +161,7 @@ public class ProdutoVerbsTest {
     @Order(9)
     @DisplayName("Test: DELETE => Excluir produto")
     public void testExcluirProduto() {
-        System.out.println(produtoId);
+
         given()
                 .contentType(ContentType.JSON)
                 .header("authorization", token)
