@@ -2,7 +2,7 @@
     <h1> Plano de Teste </h1>
 </div>
 
-# 1. Projeto: ServeRest - RestAssured
+# 1. Projeto: ServeTest
 - Verificar e testar os endpoints "/Login", "/Usuários", "/Produtos" e "/Carrinho" e seus respectivos verbos HTTP (GET, POST, PUT, DELETE) da API [ServeRest](https://serverest.dev/#/).
 - Para rodar os testes é necessário instalar o Node.js, esse irá criar o localhost para teste, e digitar o comando:```npx serverest@latest``` em algum terminal
 
@@ -230,7 +230,7 @@ Todos os testes foram criados e testados localmente em meu computador pessoal pe
 | Documentação       | 02/07/2024      | 03/07/2024       |
 
 # 8. Conclusão
-O projeto ServeRest foi concebido com o objetivo de garantir a qualidade e a funcionalidade da API ServeRest, utilizando RestAssured para a automação dos testes. 
+O projeto ServeTest foi concebido com o objetivo de garantir a qualidade e a funcionalidade da API ServeRest, utilizando RestAssured para a automação dos testes. 
 
 Com uma abordagem meticulosa e baseada nos critérios de aceitação das User Stories (US|001 Usuários, US|002 Login, US|003 Produtos e US|004 Carrinho), foi coberto diversas situações e cenários de uso. Asseguro (até a data do Cronograma) que os processos de cadastro, login, gerenciamento de produtos e operações de carrinho funcionem conforme esperado, proporcionando uma experiência segura e eficiente tanto para compradores quanto para vendedores.
 
