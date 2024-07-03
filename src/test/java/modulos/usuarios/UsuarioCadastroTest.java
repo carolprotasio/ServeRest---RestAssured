@@ -2,14 +2,13 @@ package modulos.usuarios;
 
 import dataFactory.UsuarioDataFactory;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("Validação da funcionalidade => Cadastro de Usuário")
 public class UsuarioCadastroTest {
 
@@ -21,8 +20,10 @@ public class UsuarioCadastroTest {
         port = 3000;
     }
     @Test
-    @DisplayName("Teste: Cadastrar novo usuário com dados válidos com sucesso")
+    @Order(1)
+    @DisplayName("Teste: cadastrar novo usuário com dados válidos com sucesso")
     public void testCadastrarDadosValidos() {
+
          id = given()
                 .contentType(ContentType.JSON)
                 .body(UsuarioDataFactory.registerNewUser())
@@ -36,7 +37,9 @@ public class UsuarioCadastroTest {
                  .path("_id");
 
     }
+
     @Test
+    @Order(2)
     @DisplayName("Teste: cadastro com Email Inválido")
     public void testCadastrarUserEmailInvalido() {
             given()
@@ -50,19 +53,21 @@ public class UsuarioCadastroTest {
                 .body("email", equalTo("email deve ser um email válido"));
     }
     @Test
+    @Order(3)
     @DisplayName("Teste: cadastro com campo da EMAIL vazio")
     public void testCadastrarUserCampoEmailVazio() {
         given()
                 .contentType(ContentType.JSON)
                 .body(UsuarioDataFactory.registerUserEmptyEmail())
-                .when()
+            .when()
                 .post("/usuarios")
-                .then()
+            .then()
                 .assertThat()
                 .statusCode(400)
                 .body("email", equalTo("email não pode ficar em branco"));
     }
     @Test
+    @Order(4)
     @DisplayName("Teste: cadastro com campo da SENHA vazio")
     public void testCadastrarUserCampoPasswordVazio() {
         given()
@@ -76,6 +81,7 @@ public class UsuarioCadastroTest {
                 .body("password", equalTo("password não pode ficar em branco"));
     }
     @Test
+    @Order(5)
     @DisplayName("Teste: cadastro com campo da NOME vazio")
     public void testCadastrarUserCampoNomeVazio() {
         given()
@@ -89,6 +95,7 @@ public class UsuarioCadastroTest {
                 .body("nome", equalTo("nome não pode ficar em branco"));
     }
     @Test
+    @Order(6)
     @DisplayName("Teste: cadastro com campo da ADMIN vazio")
     public void testCadastrarUserCampoAdmVazio() {
         given()
@@ -102,6 +109,7 @@ public class UsuarioCadastroTest {
                 .body("administrador", equalTo("administrador deve ser 'true' ou 'false'"));
     }
     @Test
+    @Order(7)
     @DisplayName("Teste: cadastro com TODOS campos vazio")
     public void testCadastrarUserTodosCamposVazio() {
         given()
@@ -116,6 +124,36 @@ public class UsuarioCadastroTest {
                 .body("email", equalTo("email não pode ficar em branco"))
                 .body("password", equalTo("password não pode ficar em branco"))
                 .body("administrador", equalTo("administrador deve ser 'true' ou 'false'"));
+    }
+    @Test
+    @Order(8)
+    @DisplayName("Test: cadastrar usuario com EMAIL já cadastrado")
+    public void testCadastrarUsuarioComEmailCadastrado() {
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(UsuarioDataFactory.registerUserEmailJaCadastrado())
+            .when()
+                .post("/usuarios")
+            .then()
+                .assertThat()
+                .statusCode(400)
+                .body("message", equalTo("Este email já está sendo usado"));
+
+    }
+
+    @AfterAll
+    @DisplayName("DELETE => Massa de dados")
+    public void testDeleteUsuario() {
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .delete("/usuarios/" + id)
+                .then()
+                .assertThat()
+                .body("message", equalTo("Registro excluído com sucesso"))
+                .statusCode(200);
     }
 
 }

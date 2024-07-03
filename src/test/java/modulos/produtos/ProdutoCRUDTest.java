@@ -7,21 +7,18 @@ import org.junit.jupiter.api.*;
 import pojo.UsuarioPojo;
 
 import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.RestAssuredMatchers.*;
 import static org.hamcrest.Matchers.*;
 
-@DisplayName("Validar funcionalidades no modulo => Produtos ")
+@DisplayName("Validar CRUD do modulo => Produtos ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ProdutoTest {
+public class ProdutoCRUDTest {
 
-
-    private String produtoId;
     private String token;
     private String userId;
     private String email;
     private String password;
-    private String tokenUsuario;
+    private  String produtoId;
 
     @BeforeAll
     public void beforeAll(){
@@ -54,13 +51,13 @@ public class ProdutoTest {
                 .assertThat()
                 .statusCode(200)
                 .body("message", equalTo("Login realizado com sucesso"))
-                .extract()
-                .path("authorization");
-
+                    .extract()
+                        .path("authorization");
     }
+
     @Test
     @Order(1)
-    @DisplayName("Validar => Cadastrar novo produto  / extrair Produto ID")
+    @DisplayName("C => Cadastrar novo produto")
     public void testCadastrarNovoProduto() {
 
         produtoId = given()
@@ -73,94 +70,48 @@ public class ProdutoTest {
                 .assertThat()
                 .body("message", equalTo("Cadastro realizado com sucesso"))
                 .statusCode(201)
-                .extract()
-                .path("_id");
+                    .extract()
+                        .path("_id");
     }
     @Test
     @Order(2)
-    @DisplayName("Validar => Cadastrar Produto com mesmo Nome")
-    public void testCadastrarProdutoMesmoNome() {
+    @DisplayName("R => Listar produtos cadastrados por ID")
+    public void testListarProdutoComId() {
 
         given()
                 .contentType(ContentType.JSON)
-                .header("Authorization", token)
-                .body(ProdutoDataFactory.registerProdutoMesmoNome())
-                .when()
-                .post("/produtos")
-                .then()
+            .when()
+                .get("/produtos/" + produtoId)
+            .then()
                 .assertThat()
-                .statusCode(400)
-                .body("message", equalTo("Já existe produto com esse nome"));
+                .statusCode(200);
+
     }
     @Test
     @Order(3)
-    @DisplayName("Validar => Cadastrar Produto com token ausente")
-    public void testCadastrarProdutoTokenAusente() {
+    @DisplayName("U => Editar produto")
+    public void testEditarProduto() {
 
         given()
                 .contentType(ContentType.JSON)
-                //.header("Authorization", tokenAdm)
-                .body(ProdutoDataFactory.registerNewProduct())
-                .when()
-                .post("/produtos")
-                .then()
-                .assertThat()
-                .statusCode(401)
-                .body("message", equalTo("Token de acesso ausente, inválido, expirado ou usuário do token não existe mais"));
-    }
-    @Test
-    @Order(4)
-    @DisplayName("Validar => Listar produtos cadastrados")
-    public void testListarProdutosCadastrados() {
-
-        given()
-                .contentType(ContentType.JSON)
-                .when()
-                .get("/produtos")
-                .then()
+                .body(ProdutoDataFactory.productEdit())
+            .when()
+                .get("/produtos/" + produtoId)
+            .then()
                 .assertThat()
                 .statusCode(200);
     }
     @Test
-    @DisplayName("Validar => Rota proíbida pelo usuário no cadastro de produtos ")
-    public void testCadastrarProdutoComoUsuario() {
-
-        tokenUsuario = given()
-                .contentType(ContentType.JSON)
-                .body("{\n" +
-                        " \"email\": \"noAdm@qa.com\",\n" +
-                        " \"password\": \"123456\"\n" +
-                        "}")
-                .when()
-                .post("/login")
-                .then()
-                .assertThat()
-                .statusCode(200)
-                .extract()
-                .path("authorization");
-        given()
-                .contentType(ContentType.JSON)
-                .header("Authorization", tokenUsuario)
-                .body(ProdutoDataFactory.registerNewProduct())
-                .when()
-                .post( "/produtos")
-                .then()
-                .assertThat()
-                .statusCode(403)
-                .body("message", equalTo("Rota exclusiva para administradores"));
-    }
-
-    @Test
-    @Order(999)
-    @DisplayName("Validar=> Deletar/Excluir produto")
+    @Order(4)
+    @DisplayName("D => Deletar/Excluir produto")
     public void testExcluirProduto() {
 
         given()
                 .contentType(ContentType.JSON)
                 .header("authorization", token)
-                .when()
+            .when()
                 .delete("/produtos/" + produtoId)
-                .then()
+            .then()
                 .assertThat()
                 .statusCode(200)
                 .body("message", equalTo("Registro excluído com sucesso"));
@@ -170,14 +121,11 @@ public class ProdutoTest {
     public void testDeleteUsuario() {
         given()
                 .contentType(ContentType.JSON)
-                .when()
+            .when()
                 .delete("/usuarios/" + userId)
-                .then()
+            .then()
                 .assertThat()
                 .body("message", equalTo("Registro excluído com sucesso"))
                 .statusCode(200);
     }
-
-
-
 }

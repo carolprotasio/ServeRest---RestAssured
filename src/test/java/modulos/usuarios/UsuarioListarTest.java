@@ -5,7 +5,6 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.RestAssuredMatchers.*;
 import static org.hamcrest.Matchers.*;
 
 @DisplayName("Validar a busca por usuário por filtros ")
@@ -161,6 +160,30 @@ public class UsuarioListarTest {
                 .assertThat()
                 .statusCode(400)
                 .body("message", equalTo("Usuário não encontrado"));
+
+    }
+
+    @AfterAll
+    @DisplayName("DELETE => Massa de dados")
+    public void testDeleteUsuario() {
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .delete("/usuarios/" + admId)
+                .then()
+                .assertThat()
+                .body("message", equalTo("Registro excluído com sucesso"))
+                .statusCode(200);
+
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .delete("/usuarios/" + userId)
+                .then()
+                .assertThat()
+                .body("message", equalTo("Registro excluído com sucesso"))
+                .statusCode(200);
 
     }
 

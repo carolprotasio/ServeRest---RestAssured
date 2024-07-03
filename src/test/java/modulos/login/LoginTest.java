@@ -3,35 +3,51 @@ package modulos.login;
 
 import dataFactory.UsuarioDataFactory;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import pojo.UsuarioPojo;
 
 import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.RestAssuredMatchers.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
 
-@DisplayName("Validar modulo de Login")
+@DisplayName("Validar funcionalidade no modulo de Login")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class LoginTest {
 
-    private String newUser;
+    private String userId;
+    private String email;
+    private String password;
 
-    @BeforeEach
-    public void beforeEach(){
+    @BeforeAll
+    public void beforeAll(){
         baseURI = "http://localhost";
         port = 3000;
-    }
 
+        UsuarioPojo newUser = UsuarioDataFactory.registerNewUser();
+        this.email = newUser.getEmail();
+        this.password = newUser.getPassword();
+
+
+        userId = given()
+                .contentType(ContentType.JSON)
+                .body(newUser)
+            .when()
+                .post("/usuarios")
+            .then()
+                .assertThat()
+                .statusCode(201)
+                .body("message", equalTo("Cadastro realizado com sucesso"))
+                .extract()
+                .path("_id");
+    }
     @Test
-    @DisplayName("Validar - Login com sucesso")
+    @Order(1)
+    @DisplayName("Realizar Login com sucesso")
     public void testLoginSucesso() {
 
-        given()
+         given()
                 .contentType(ContentType.JSON)
-                .body("{\n" +
-                        "  \"email\": \"carol@qa.com\",\n" +
-                        "  \"password\": \"123456\"\n" +
-                        "}")
+                .body("{ \"email\": \"" + email + "\", \"password\": \"" + password + "\" }")
             .when()
                 .post("/login")
             .then()
@@ -40,9 +56,9 @@ public class LoginTest {
                 .body("message", equalTo("Login realizado com sucesso"));
     }
     @Test
-    @DisplayName("Validar - Login com email no formato invalido => sem @")
+    @Order(2)
+    @DisplayName("Validar => Login com email no formato invalido = sem @")
     public void testLoginEmailFormatoInvalido() {
-
         given()
                 .contentType(ContentType.JSON)
                 .body("{\n" +
@@ -56,32 +72,35 @@ public class LoginTest {
                 .statusCode(400)
                 .body("email", equalTo("email deve ser um email válido"));
     }
+
     @Test
-    @DisplayName("Validar - Login com senha inválida")
+    @Order(3)
+    @DisplayName("Validar => Login com senha inválida")
     public void testLoginSenhaInvalida() {
 
         given()
                 .contentType(ContentType.JSON)
                 .body("{\n" +
-                        "  \"email\": \"carol@qa.com\",\n" +
-                        "  \"password\": \"invalido\"\n" +
+                        "  \"email\": \"" + email + "\",\n" +
+                        "  \"password\": \"123\"\n" +
                         "}")
-                .when()
+            .when()
                 .post("/login")
-                .then()
+            .then()
                 .assertThat()
                 .statusCode(401)
                 .body("message", equalTo("Email e/ou senha inválidos"));
     }
     @Test
-    @DisplayName("Validar - Login com campo vazio na senha")
+    @Order(4)
+    @DisplayName("Validar => Login com campo vazio da SENHA")
     public void testLoginESenhaCampoVazio() {
 
         given()
                 .contentType(ContentType.JSON)
                 .body("{\n" +
-                        "  \"email\": \"carol@qa.com\",\n" +
-                        "  \"password\": \"\"\n" +
+                        " \"email\": \"" + email + "\",\n" +
+                        " \"password\": \"\"\n" +
                         "}")
             .when()
                 .post("/login")
@@ -91,14 +110,15 @@ public class LoginTest {
                 .body("password", equalTo("password não pode ficar em branco"));
     }
     @Test
-    @DisplayName("Validar - Login com campo vazio no email")
+    @Order(5)
+    @DisplayName("Validar => Login com campo vazio do EMAIL")
     public void testLoginCampoVazioEmail() {
 
         given()
                 .contentType(ContentType.JSON)
                 .body("{\n" +
-                        "  \"email\": \" \",\n" +
-                        "  \"password\": \"teste\"\n" +
+                        " \"email\": \" \",\n" +
+                        " \"password\": \"" + password + "\"\n" +
                         "}")
             .when()
                 .post("/login")
@@ -108,14 +128,15 @@ public class LoginTest {
                 .body("email", equalTo("email deve ser um email válido"));
     }
     @Test
-    @DisplayName("Validar - Login com todos os campo vazio")
+    @Order(6)
+    @DisplayName("Validar => Login com TODOS os campo vazio")
     public void testLoginTodosCamposVazio() {
 
         given()
                 .contentType(ContentType.JSON)
                 .body("{\n" +
-                        "  \"email\": \" \",\n" +
-                        "  \"password\": \"\"\n" +
+                        " \"email\": \" \",\n" +
+                        " \"password\": \"\"\n" +
                         "}")
             .when()
                 .post("/login")
@@ -127,6 +148,17 @@ public class LoginTest {
 
     }
 
-
+    @AfterAll
+    @DisplayName("DELETE => Massa de dados / Usuário")
+    public void testDeleteUsuario() {
+        given()
+                .contentType(ContentType.JSON)
+            .when()
+                .delete("/usuarios/" + userId)
+            .then()
+                .assertThat()
+                .body("message", equalTo("Registro excluído com sucesso"))
+                .statusCode(200);
+    }
 
 }

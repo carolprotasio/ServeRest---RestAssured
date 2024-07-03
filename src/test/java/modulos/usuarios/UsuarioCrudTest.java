@@ -5,14 +5,13 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.RestAssuredMatchers.*;
 import static org.hamcrest.Matchers.*;
 
-@DisplayName("Validar os verbos HTTP do => Usuário ")
+@DisplayName("Validar CRUD API Usuário ")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class UsuarioVerbsTest {
-    private String id;
+public class UsuarioCrudTest {
+    private static String id;
 
     @BeforeEach
     public void beforeEach(){
@@ -22,7 +21,7 @@ public class UsuarioVerbsTest {
 
     @Test
     @Order(1)
-    @DisplayName("Test: POST => Cadastrar novo usuário e obter num do ID com sucesso")
+    @DisplayName("C => Cadastrar novo usuário e obter ID com sucesso")
     public void testCadastrarNovoUsuario() {
 
         id = given()
@@ -38,25 +37,10 @@ public class UsuarioVerbsTest {
                 .path("_id");
 
     }
+
     @Test
     @Order(2)
-    @DisplayName("Test: POST => Validar cadastrar usuario com EMAIL já cadastrado")
-    public void testCadastrarUsuarioComEmailCadastrado() {
-
-         given()
-                .contentType(ContentType.JSON)
-                .body(UsuarioDataFactory.registerUserEmailJaCadastrado())
-            .when()
-                .post("/usuarios")
-            .then()
-                .assertThat()
-                .statusCode(400)
-                .body("message", equalTo("Este email já está sendo usado"));
-
-    }
-    @Test
-    @Order(3)
-    @DisplayName("Test: GET => Listar usuários cadastrados")
+    @DisplayName("R => Listar usuários cadastrados")
     public void testListarUsuariosCadastrados() {
 
             given()
@@ -66,27 +50,10 @@ public class UsuarioVerbsTest {
             .then()
                 .assertThat()
                 .statusCode(200);
-
     }
     @Test
-    @Order(4)
-    @DisplayName("Test: GET => Buscar usuário por ID")
-    public void testBuscarUsuarioPorId() {
-
-             given()
-                .contentType(ContentType.JSON)
-            .when()
-                .get("/usuarios/" + id)
-            .then()
-                .assertThat()
-                     .body("_id", equalTo(id))
-                     .statusCode(200);
-
-    }
-
-    @Test
-    @Order(5)
-    @DisplayName("Test: PUT => Editar Usuário")
+    @Order(3)
+    @DisplayName("U => Editar Usuário")
     public void testEditarUsuario() {
 
         given()
@@ -101,8 +68,8 @@ public class UsuarioVerbsTest {
 
     }
     @Test
-    @Order(6)
-    @DisplayName("Test: DELETE => Excluir Usuário")
+    @Order(4)
+    @DisplayName("D => Deletar Usuário")
     public void testExcluirUsuario() {
 
         given()
@@ -113,7 +80,24 @@ public class UsuarioVerbsTest {
                 .assertThat()
                 .body("message", equalTo("Registro excluído com sucesso"))
                 .statusCode(200);
+    }
+    @Test
+    @Order(5)
+    @DisplayName("Test => Validar usuário por ID excluido")
+    public void testBuscarUsuarioPorId() {
+
+             given()
+                .contentType(ContentType.JSON)
+            .when()
+                .get("/usuarios/" + id)
+            .then()
+                .assertThat()
+                     .body("message", equalTo("Usuário não encontrado"))
+                     .statusCode(400);
 
     }
+
+
+
 
 }

@@ -27,9 +27,9 @@ public class UsuarioDataFactory {
 
     public static UsuarioPojo registerNewUser() {
         UsuarioPojo newUser = new UsuarioPojo();
-        newUser.setNome(faker.name().firstName());
-        newUser.setEmail(faker.internet().emailAddress());
-        newUser.setPassword(faker.internet().password());
+        newUser.setNome("Cteste");
+        newUser.setEmail("ctest@qa.com");
+        newUser.setPassword("123456");
         newUser.setAdministrador("true");
         return newUser;
     }
@@ -84,7 +84,7 @@ public class UsuarioDataFactory {
     public static UsuarioPojo userEdit() {
         UsuarioPojo newUser = new UsuarioPojo();
         newUser.setNome(faker.name().firstName());
-        newUser.setEmail(faker.internet().emailAddress());
+        newUser.setEmail(faker.name().firstName() + "@qa.com");
         newUser.setPassword(faker.internet().password());
         newUser.setAdministrador("true");
         return newUser;

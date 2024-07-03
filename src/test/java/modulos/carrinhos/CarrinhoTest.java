@@ -1,119 +1,107 @@
 package modulos.carrinhos;
+import dataFactory.ProdutoDataFactory;
+import dataFactory.UsuarioDataFactory;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
+import pojo.ProdutoPojo;
+import pojo.UsuarioPojo;
 
 import static io.restassured.RestAssured.*;
-import static io.restassured.matcher.RestAssuredMatchers.*;
 import static org.hamcrest.Matchers.*;
 
-@DisplayName("Validar Funcionalidade CRUD => Carrinho")
+@DisplayName("Validar Funcionalidade  => Carrinho")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CarrinhoTest {
 
     private String carrinhoId;
     private String token;
-    private String produtoId;
-    private int precoTotal;
-    private String idUsuario;
-    private String _id;
+    private String userId;
+    private String email;
+    private String password;
+    private String produtoId1;
+    private String produtoId2;
+    private int produto1Qtd;
+    private int produto2Qtd;
 
-    @BeforeEach
-    public void beforeEach() {
-
+    @BeforeAll
+    public void beforeAll(){
         baseURI = "http://localhost";
         port = 3000;
 
-        token = given()
+        UsuarioPojo newUser = UsuarioDataFactory.registerNewUser();
+        this.email = newUser.getEmail();
+        this.password = newUser.getPassword();
+
+        this.userId = given()
                 .contentType(ContentType.JSON)
-                .body("{\n" +
-                        "  \"email\": \"noAdm@qa.com\",\n" +
-                        "  \"password\": \"123456\"\n" +
-                        "}")
+                .body(newUser)
+            .when()
+                .post("/usuarios")
+            .then()
+                .assertThat()
+                .statusCode(201)
+                .body("message", equalTo("Cadastro realizado com sucesso"))
+                .extract()
+                .path("_id");
+
+        this.token =  given()
+                .contentType(ContentType.JSON)
+                .body("{ \"email\": \"" + email + "\", \"password\": \"" + password + "\" }")
             .when()
                 .post("/login")
             .then()
                 .assertThat()
                 .statusCode(200)
-                    .extract()
-                        .path("authorization");
+                .body("message", equalTo("Login realizado com sucesso"))
+                .extract()
+                .path("authorization");
     }
     @Test
     @Order(1)
-    @DisplayName("Test: GET => Listar Carrinhos Cadastrados TODOS")
-    public void testListarCarrinhos() {
+    @DisplayName("POST => Cadastrar produto 1")
+    public void testCadastrarNProduto1() {
 
-        produtoId = given()
+        ProdutoPojo newProduct1 = ProdutoDataFactory.registerNewProduct();
+        this.produto1Qtd = newProduct1.getQuantidade();
+
+        produtoId1 = given()
                 .contentType(ContentType.JSON)
-                .when()
-                .get("/carrinhos")
-                .then()
+                .header("Authorization", token)
+                .body(newProduct1)
+            .when()
+                .post("/produtos")
+            .then()
                 .assertThat()
-                .statusCode(200)
+                .body("message", equalTo("Cadastro realizado com sucesso"))
+                .statusCode(201)
                 .extract()
-                .path("carrinhos[0].produtos[1].idProduto");
+                .path("_id");
     }
     @Test
     @Order(2)
-    @DisplayName("Test: GET => Listar Carrinhos Cadastrados por Carrinho ID")
-    public void testListarCarrinhosPorId() {
+    @DisplayName("POST => Cadastrar produto 2")
+    public void testCadastrarProduto2() {
 
-        _id = given()
+        ProdutoPojo newProduct2 = ProdutoDataFactory.registerNewProduct();
+        this.produto2Qtd = newProduct2.getQuantidade();
+
+        produtoId2 = given()
                 .contentType(ContentType.JSON)
+                .header("Authorization", token)
+                .body(newProduct2)
             .when()
-                .get("/carrinhos")
+                .post("/produtos")
             .then()
                 .assertThat()
-                .statusCode(200)
+                .body("message", equalTo("Cadastro realizado com sucesso"))
+                .statusCode(201)
                 .extract()
-                .path("carrinhos[0].-id");
-
-        precoTotal = given()
-                .contentType(ContentType.JSON)
-                .param("_id", _id)
-            .when()
-                .get("/carrinhos")
-            .then()
-                .assertThat()
-                .statusCode(200)
-                .extract()
-                .path("carrinhos[0].precoTotal");
-
+                .path("_id");
     }
     @Test
     @Order(3)
-    @DisplayName("Test: GET => Listar Carrinhos Cadastrados por Preço Total")
-    public void testListarCarrinhosPorIPrecoTotal() {
-
-        given()
-                .contentType(ContentType.JSON)
-                .param("precoTotal", precoTotal)
-                .when()
-                .get("/carrinhos")
-                .then()
-                .assertThat()
-                .statusCode(200);
-    }
-    @Test
-    @Order(4)
-    @DisplayName("Test: GET => Listar Carrinhos Cadastrados por Quantidade Total")
-    public void testListarCarrinhosPorQuantidadeTotal() {
-
-        idUsuario = given()
-                .contentType(ContentType.JSON)
-                .param("quantidadeTotal", 50)
-            .when()
-                .get("/carrinhos")
-            .then()
-                .assertThat()
-                .statusCode(200)
-                .extract()
-                .path("carrinhos[0].produtos[0].idUsuario");
-
-    }
-    @Test
-    @Order(5)
-    @DisplayName("Test: POST => Cadastrar Carrinhos")
+    @DisplayName("POST => Cadastrar Carrinho")
     public void testCadastrarCarrinho() {
 
         carrinhoId = given()
@@ -122,8 +110,12 @@ public class CarrinhoTest {
                 .body("{\n" +
                         "  \"produtos\": [\n" +
                         "    {\n" +
-                        "      \"idProduto\": \""+ produtoId +"\",\n" +
-                        "      \"quantidade\": 2\n" +
+                        "      \"idProduto\": \"" + produtoId1 + "\",\n" +
+                        "      \"quantidade\": " + produto1Qtd + "\n" +
+                        "    },\n" +
+                        "    {\n" +
+                        "      \"idProduto\": \"" + produtoId2 + "\",\n" +
+                        "      \"quantidade\": " + produto2Qtd + "\n" +
                         "    }\n" +
                         "  ]\n" +
                         "}")
@@ -132,13 +124,13 @@ public class CarrinhoTest {
             .then()
                 .assertThat()
                 .statusCode(201)
-                    .extract()
+                .extract()
                 .path("_id");
     }
     @Test
     @Order(6)
-    @DisplayName("Test: GET => Buscar Carrinho por ID")
-    public void testBuscarCarrinhoId() {
+    @DisplayName("GET => Listar Carrinho por ID")
+    public void testListarCarrinhoId() {
 
         given()
                 .contentType(ContentType.JSON)
@@ -149,11 +141,24 @@ public class CarrinhoTest {
             .then()
                 .assertThat()
                 .statusCode(200);
-
     }
     @Test
-    @Order(7)
-    @DisplayName("Test: DELETE => Excluir Carrinho")
+    @Order(6)
+    @DisplayName("GET => Listar todos os Carrinhos")
+    public void testListarTodosCarrinhos() {
+
+        given()
+                .contentType(ContentType.JSON)
+                .header("authorization", token)
+            .when()
+                .get("/carrinhos" )
+            .then()
+                .assertThat()
+                .statusCode(200);
+    }
+    @Test
+    @Order(88)
+    @DisplayName("Test: DELETE => Excluir Carrinho / Realizar Compra")
     public void testExcluirCarrinho() {
 
         given()
@@ -168,7 +173,7 @@ public class CarrinhoTest {
 
     }
     @Test
-    @Order(8)
+    @Order(99)
     @DisplayName("Test: DELETE => Excluir Carrinho quando NÂO tem carrinho para o usuário")
     public void testExcluirCarrinhoRetornarProdutosEstoque() {
 
@@ -183,8 +188,17 @@ public class CarrinhoTest {
                 .body("message", equalTo("Não foi encontrado carrinho para esse usuário"));
 
     }
-
-
-
+    @AfterAll
+    @DisplayName("DELETE => Massa de dados")
+    public void testDeleteUsuario() {
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .delete("/usuarios/" + userId)
+                .then()
+                .assertThat()
+                .body("message", equalTo("Registro excluído com sucesso"))
+                .statusCode(200);
+    }
 
 }
