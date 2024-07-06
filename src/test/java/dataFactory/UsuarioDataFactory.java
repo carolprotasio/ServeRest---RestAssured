@@ -89,5 +89,38 @@ public class UsuarioDataFactory {
         newUser.setAdministrador("true");
         return newUser;
     }
+    public static UsuarioPojo alterarNomeVazio() {
+        UsuarioPojo newUser = new UsuarioPojo();
+        newUser.setNome("");
+        newUser.setEmail(faker.name().firstName() + "@qa.com");
+        newUser.setPassword(faker.internet().password());
+        newUser.setAdministrador("true");
+        return newUser;
+    }
+    public static UsuarioPojo alterarEmailVazio() {
+        UsuarioPojo newUser = new UsuarioPojo();
+        newUser.setNome(faker.name().firstName());
+        newUser.setEmail("");
+        newUser.setPassword(faker.internet().password());
+        newUser.setAdministrador("true");
+        return newUser;
+    }
+    public static UsuarioPojo alterarPasswordVazio() {
+        UsuarioPojo newUser = new UsuarioPojo();
+        newUser.setNome(faker.name().firstName());
+        newUser.setEmail(faker.name().firstName() + "@qa.com");
+        newUser.setPassword("");
+        newUser.setAdministrador("true");
+        return newUser;
+    }
+    public static UsuarioPojo alterarAdmVazio() {
+        UsuarioPojo newUser = new UsuarioPojo();
+        newUser.setNome(faker.name().firstName());
+        newUser.setEmail(faker.name().firstName() + "@qa.com");
+        newUser.setPassword(faker.internet().password());
+        newUser.setAdministrador("");
+        return newUser;
+    }
+
 
 }

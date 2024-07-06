@@ -31,6 +31,22 @@ public class ProdutoDataFactory {
         newProduct.setQuantidade(faker.number().numberBetween(1, 100));
         return newProduct;
     }
+    public static ProdutoPojo registerProdutoCamposVazio() {
+        ProdutoPojo newProduct = new ProdutoPojo();
+        newProduct.setNome("");
+        newProduct.setPreco( 1);
+        newProduct.setDescricao(" ");
+        newProduct.setQuantidade(1);
+        return newProduct;
+    }
+    public static ProdutoPojo registerNewProductValorNegativo() {
+        ProdutoPojo newProduct = new ProdutoPojo();
+        newProduct.setNome(faker.commerce().productName());
+        newProduct.setPreco(-1);
+        newProduct.setDescricao(faker.commerce().material());
+        newProduct.setQuantidade(faker.number().numberBetween(1, 100));
+        return newProduct;
+    }
 
 
 }
