@@ -210,7 +210,7 @@ O objetivo do teste é garantir que as áreas descritas acima sejam testadas uti
 # 5. Local dos Testes
 Todos os testes foram criados e testados localmente em meu computador pessoal pelo endereço: http://localhost:3000, o qual emula o ambiente da API.
 
-# 6. Tecnologias utilizada
+# 6. Tecnologias utilizadas
     - IntelliJ (Java IDE);
     - RestAssured;
     - JUnit;
