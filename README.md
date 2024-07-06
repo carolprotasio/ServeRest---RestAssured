@@ -9,6 +9,10 @@
 # 2. Resumo
 O objetivo do teste é garantir que as áreas descritas acima sejam testadas utilizando RestAssured no Java, para que o projeto consiga seguir o fluxo de compras de maneira funcional, com o fim de atingir seu objetivo final, ou seja, cadastrar/logar/vender um produto. Para isso, foi baseado nos critérios de aceitação presentes nas User Stories (US): US|001 Usuários, US|002 Login, US|003 Produtos e US|004 Carrinho.
 
+![testes](https://github.com/carolprotasio/ServeRest-RestAssured/blob/master/assets/total_testpng.png)
+## - Swagger 
+#### [O Swagger do projeto](https://serverest.dev/#)
+  ![swagger](https://github.com/carolprotasio/ServeRest-RestAssured/blob/master/assets/swagger.png)
 
 # 3. Pessoas Envolvidas
 - Testadora: Carol Protásio;
@@ -63,7 +67,7 @@ O objetivo do teste é garantir que as áreas descritas acima sejam testadas uti
 - CT-022: Excluir um usuário com ID existente;
 - CT-023: Excluir um usuário previamente excluído;
 
-  ![UsuáriosCaso de Teste]()
+  ![UsuáriosCaso de Teste](https://github.com/carolprotasio/ServeRest-RestAssured/blob/master/assets/usuario_casoTest.png)
 
 
 ### **Testes Candidatos à Automação**
@@ -105,7 +109,7 @@ O objetivo do teste é garantir que as áreas descritas acima sejam testadas uti
 - CT_009: Logar com o(s) campo(s) 'email' e 'senha' em branco;
 - CT_010: Após sucesso ao autenticar, verificar se foi gerado o Token de acesso;
 
-![Login Caso de Teste]()
+![Login Caso de Teste](https://github.com/carolprotasio/ServeRest-RestAssured/blob/master/assets/login_casoTest.png)
 
 ###  **Testes Candidatos à Automação**
 - Todos.
@@ -147,7 +151,7 @@ O objetivo do teste é garantir que as áreas descritas acima sejam testadas uti
 - CT_012: Excluir um produto com ID inexistente;
 - CT_013: Excluir um produto com sucesso;
 
-  ![Produto Caso de Teste]()
+  ![Produto Caso de Teste](https://github.com/carolprotasio/ServeRest-RestAssured/blob/master/assets/produto_casoTest.png)
 
 ### **Testes Candidatos à Automação**
 - Todos.
@@ -198,7 +202,7 @@ O objetivo do teste é garantir que as áreas descritas acima sejam testadas uti
 - CT_014 => Cancelar uma compra sem estar autenticado;
 - CT_016 => Cancelar uma compra;
 
-![carrinho Caso de Teste]()
+![carrinho Caso de Teste](https://github.com/carolprotasio/ServeRest-RestAssured/blob/master/assets/carrinho_casoTest.png)
 
 ### **Testes Candidatos à Automação**
 - Todos.
