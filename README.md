@@ -40,7 +40,6 @@ O objetivo do teste é garantir que as áreas descritas acima sejam testadas uti
 - Um novo usuário deverá ser criado caso não seja encontrado ID existente informado no PUT;
 - Não deve ser possível cadastrar usuário com e-mail já utilizado;
 - E-mails devem seguir um padrão válido de e-mail para o cadastro;
-- As senhas devem possuír no mínimo 5 caracteres e no máximo 10 caracteres;
 
 ###  **Casos de Teste**
 - CT-001: Cadastrar novo usuário com dados válidos com sucesso;
